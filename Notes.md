@@ -1,9 +1,17 @@
-# Chapter 1
+# Lecture 1
+## Chapter 1
+### Section 1.1
+## Chapter 2
+### Section 2.1
+### Section 2.2
+### Section 2.3
+### Section 2.4
+### Section 2.5
 
-# Chapter 2
+# Lecture 2
 
-# Chapter 3
+# Lecture 3
 
-# Chapter 4
+# Lecture 4
 
-# Chapter 5
+# Lecture 5
