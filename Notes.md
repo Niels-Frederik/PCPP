@@ -93,7 +93,17 @@ one state variable, there is an additional requirement: each variable participat
 
 ## Goetz - Chapter 16
 ### Section 16.1.3 - Java memory model
+The JMM is defined as actions, which includes read, writes, locks, unlocks etc. The JMM defines a partial ordering called * Happens-before * on all actions within the program. There must be a happens-before relation between thread A and B. Without such a relation, the JVM is free to reorder them as it pleases.
 
+The rules for happens-before:
+- Program order rule (each action in a thread happens before every action in that thread that comes later in the program order)
+- Monitor lock rule (an unlock on a monitor lock happens before every subsequent lock on that same monitor lock)
+- Volatile variable rule (A write to a volatile field happens before subsequent reads of same field)
+- Thread start rule (a call to Thread.start happens before every action in the thread started)
+- Thread termination rule (Any action in a thread happens-before any other thread detects that thread has terminated, either by successfully return from Thredd.join or by Thread.isAlive returning false)
+- Interruption rule (A thread calling interrupt on another thread happens-before the interrupted thread detects the interrupt (either by having InterruptedException thrown, or invoking isInterrupted or interrupted))
+- Finalizer rule (The end of a constructor for an object happens before the start of the finalizer for that object)
+- Transitivity (if a happens before b, and b happens before c, then a happens before c)
 
 
 # Lecture 2
