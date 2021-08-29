@@ -105,6 +105,29 @@ The rules for happens-before:
 - Finalizer rule (The end of a constructor for an object happens before the start of the finalizer for that object)
 - Transitivity (if a happens before b, and b happens before c, then a happens before c)
 
+## Herlihy - Chapter 1
+### Section 1.2.1
+** Coordination protocol ** -> mutually compatible procedures for deciding what to do
+
+** mutual exclusion ** -> 2 pets cannot be in the yard at the same time
+
+** deadlock freedom ** -> liveness property... will not encounter deadlock
+
+** starvation freedom ** -> (lockout-freedom), will it eventually succeed, and not starve
+
+** waiting ** - > waiting for access to something that is not properly used
+
+### Section 1.2.2
+Two kinds of communication occur naturally in concurrent systems:
+- Transient (requires both parties to participate at the same time
+- Persistent (allows for participating at different times)
+
+Mututal exclusion requires persistent communication.
+
+In modern operating systems, one common way for one thread to get the attention
+of another is to send it an interrupt. More precisely, thread A interrupts thread B by setting a bit at a location periodically checked by B. Sooner or later, B notices the bit has been set and reacts. After reacting, B typically resets the bit (A cannot reset the bit). Even though interrupts cannot solve the mutual exclusion problem, they can still be very useful. For example, interrupt communication is the basis of the Java language’s wait() and notifyAll() calls.
+
+
 
 # Lecture 2
 
