@@ -128,6 +128,47 @@ In modern operating systems, one common way for one thread to get the attention
 of another is to send it an interrupt. More precisely, thread A interrupts thread B by setting a bit at a location periodically checked by B. Sooner or later, B notices the bit has been set and reacts. After reacting, B typically resets the bit (A cannot reset the bit). Even though interrupts cannot solve the mutual exclusion problem, they can still be very useful. For example, interrupt communication is the basis of the Java language’s wait() and notifyAll() calls.
 
 
+## Herlihy - Chapter 2
+### Section 2.1 - Time and events
+Threads share a common time (not necesarrily a common clock). A thread is a state machine and its state transitions are called events. Events are instantaneous and occur in a single instant of time. Distinct events occur at distinct times. A thread a produces a sequence of events: a0,a1.... One event precedes another (a0 -> a1) if it occurs at an earlier time.
+
+Let a0 and a1 be events such that a0 → a1 . An interval (a0 , a1 ) is the duration between a0 and a1 . Interval IA = (a0 , a1 ) precedes IB = (b0 , b1 ), written IA → IB ,if a1 → b0 (that is, if the final event of IA precedes the starting event of IB ). The → relation is a partial order on intervals. Intervals that are unrelated by → are said to be concurrent. We also say that an event a precedes an interval I = (b0 , b1 ), written a → I , if a → b0 , and that I precedes a, written I → a, if b1 → a.
+
+### Section 2.2 - Critical Sections
+The actions we want to ensure are atomic can be put into a critical section. Often denoted by a lock (locking, performing the critical section, unlocking). A lock can be held, busy or free.
+
+### Section 2.3 - Two-thread solution
+LockOne class:
+We keep a boolean variable for each thread to indicate whether or not they have aquired the lock.
+
+LockTwo class:
+A single variable that indicates which thread has aquired the lock
+
+The Peterson lock:
+Starvation-free lock. Combines the two mentioned methods.
+
+### Section 2.4 - Notes on deadlock
+deadlock can arise in programs that use multiple Peterson locks (or
+any other lock implementation). For example, suppose that threads A and B share
+locks 0 and 1 , and that A acquires 0 and B acquires 1 . If A then tries to acquire 1 and B tries to acquire 0 , the threads deadlock because each one waits for the other to release its lock.
+
+This narrower notion of deadlock is distinguished from livelock, in which two
+or more threads actively prevent each other from making progress by taking steps that subvert steps taken by other threads. When the system is livelocked rather than deadlocked, there is some way to schedule the threads so that the system can make progress (but also some way to schedule them so that there is no progress)
+
+### Section 2.6 - Fairness
+Starvation-freedom ensures that everyone will enter the critical section, but makes no promises to how long it takes before.Ideally (and very informally), if A calls lock() before B, then A should enter
+the critical section before B. That is, the lock should be “first-come-first-served.” However, with the tools we have introduced so far, we cannot determine which thread called lock() first.
+
+To define fairness, we split the lock() method into a doorway section and a waiting section, where the doorway section always completes in a bounded number of steps (the waiting section may take an unbounded number of steps). That is, there is a fixed limit on the number of steps a thread may take after invoking lock() before it completes the doorway section.
+
+A section of code that is guaranteed to complete in a bounded number of steps
+is said to be bounded wait-free. A lock is first-come-first-served if its lock() method can be split into a bounded wait-free doorway section followed by a waiting section so that whenever thread A finishes its doorway before thread B starts its doorway, A cannot be overtaken by B.
+
+## Herlihy - Chapter 7
+### Section 7.1
+
+## Concurrency PDF
+Concurrency programming is a set of concepts and abstractions used for writing software with multiple independent streams of statements/instructions.
 
 # Lecture 2
 
