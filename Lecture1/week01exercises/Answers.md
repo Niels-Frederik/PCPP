@@ -18,8 +18,20 @@ This sbould not make any difference, as count++ is simply syntactic sugar, and i
 ### 1.4
 We can ensure that a correct interleving always appears by locking the critical section. This ensures mutual exclusion, as no 2 threads can ever execute the non atomic operation at the same time.
 
-##Exercise 1.2
+## Exercise 1.2
 
 ### 1.2
+An interleving like this can occur when the scheduler lets thread B execute the print statement before thread A finishes the code execution. That is, thread B reaches the first print statement before thread A executes the sleep statement and second print function:
+
+Thread A -> prints "-"
+Thread B -> prints "-"
+Thread A -> prints "|"
+Thread B -> prints "|"
+
+### 1.3
+See the Printer.java file
+
+
+
 
 
