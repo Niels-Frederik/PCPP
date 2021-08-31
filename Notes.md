@@ -1,18 +1,18 @@
 # Lecture 1
 ## Goetz - Chapter 1
 ### Section 1.1 - Introduction
-** Processes ** : Isolated, independently executing pro-
+**Processes** : Isolated, independently executing pro-
 grams to which the operating system allocates resources such as memory, ﬁle
 handles, and security credentials.
 
 processes could communicate with one another through a variety of coarse-grained communication mechanisms: sockets, signal handlers, shared memory, semaphores, and ﬁles.
 
 Motivation for executing programs simultaneously:
-- ** Resource utilization ** (sometimes programs have to wait for resources, and this wait time can be efficient to let another program run meanwhile)
--  ** Fairness ** (Programs may have equal claims to the machines resources, so it is preferable to let them share, rather than letting one program run to completion)
-- ** Convenience ** (Easier to write multiple programs that perform a single task, and let them communicate, rather than one program performing all the tasks)
+- **Resource utilization** (sometimes programs have to wait for resources, and this wait time can be efficient to let another program run meanwhile)
+-  **Fairness** (Programs may have equal claims to the machines resources, so it is preferable to let them share, rather than letting one program run to completion)
+- **Convenience** (Easier to write multiple programs that perform a single task, and let them communicate, rather than one program performing all the tasks)
 
-** Threads ** were motivated by the same 3 factors. Threads allow multiple streams of program control flow to coexist within a process. They share process-wide resources, but each thread has its own program counter, stack and local variables. They are often called ** lightweight processes ** , and is more often used than processes in modern OS as units of scheduling. Since threads share variables, coordination is key.
+**Threads** were motivated by the same 3 factors. Threads allow multiple streams of program control flow to coexist within a process. They share process-wide resources, but each thread has its own program counter, stack and local variables. They are often called **lightweight processes** , and is more often used than processes in modern OS as units of scheduling. Since threads share variables, coordination is key.
 
 ### Section 1.2 - Benefits of threads
 
@@ -25,15 +25,15 @@ Benefits of threads:
 - No blocking for ex. multiple socket connections
 
 ### Section 1.3 - Risks of threads
-** Thread safety ** -> lack of this can cause problems, ex. two threads accessing the same shared value and trying to increment it. This can produce different results on each run due to the scheduler, and is a ** Race condition ** . This simple example can be solved by making the method synchronized ('public synchronized int...').
+**Thread safety** -> lack of this can cause problems, ex. two threads accessing the same shared value and trying to increment it. This can produce different results on each run due to the scheduler, and is a **Race condition** . This simple example can be solved by making the method synchronized ('public synchronized int...').
 
-** Liveness failure ** -> When a program enters a state where it is unable to make forward progress, ie. deadlock
+**Liveness failure** -> When a program enters a state where it is unable to make forward progress, ie. deadlock
 
-** Performance hazards ** -> service time, responsiveness, throughput, resource consumption, or scalability. Threads carry runtime overhead. ** Context switches ** where the scheduler suspends a thread temporarily so another thread can run have significant cost: saving and restoring execution context, loss of locality, and CPU time spent scheduling threads instead of running them.
+**Performance hazards** -> service time, responsiveness, throughput, resource consumption, or scalability. Threads carry runtime overhead. **Context switches** where the scheduler suspends a thread temporarily so another thread can run have significant cost: saving and restoring execution context, loss of locality, and CPU time spent scheduling threads instead of running them.
 
 
 ## Goetz - Chapter 2
-Writing thread-safe code is, at its core, about managing access to * state *, and in particular to * shared, mutable state *. Informally, an object’s state in its data, stored in state variables such as instance or static ﬁelds. An object’s state encompasses any data that can affect its externally visible behavior. shared means that multiple threads can access it, and mutable means it can be changed at runtime. Making an object thread safe means coordinating access to its mutable state.
+Writing thread-safe code is, at its core, about managing access to *state*, and in particular to *shared, mutable state*. Informally, an object’s state in its data, stored in state variables such as instance or static ﬁelds. An object’s state encompasses any data that can affect its externally visible behavior. shared means that multiple threads can access it, and mutable means it can be changed at runtime. Making an object thread safe means coordinating access to its mutable state.
 
 The primary synchronization technique in java is the "synchronization" keyword.
 
@@ -49,14 +49,14 @@ chronization or other coordination on the part of the calling code.
 ### Section 2.2 - Atomicity
 An atomic action executes a single indivisible operation. '++count' is not atomic, as it is actually 3 operations: read, modify, write.
 
-** Race conditions ** -> the correctness of a computation depends on the relative timing or interleaving of multiple threads by the runtime. Can often happen in these * check-then-act * scenarios. This can also be a problem in * lazy-initialization * idioms, and can create multiple objects.
+**Race conditions** -> the correctness of a computation depends on the relative timing or interleaving of multiple threads by the runtime. Can often happen in these *check-then-act* scenarios. This can also be a problem in *lazy-initialization* idioms, and can create multiple objects.
 
-** Compound actions ** -> Check-then-act and read-modify-write are called compount actions. These must be executed atomically to remain thread safe.
+**Compound actions** -> Check-then-act and read-modify-write are called compount actions. These must be executed atomically to remain thread safe.
 
 One solution to a thread safe counter could be the ' java.util.concurrent.atomic ' library. This proviced atomic variables and objects like AtomicLong, which can be incremented thread safely.
 
 ### Section 2.3 - Locking
-Java has built in ** intrinsic locks ** with the synchronized block. A synchronized block has two parts: a reference to an object that will serve as the lock, and ablock of code to be guarded by that lock.A synchronized method is a shorthand for a synchronized block that spans an entire method body, and whose lock is
+Java has built in **intrinsic locks** with the synchronized block. A synchronized block has two parts: a reference to an object that will serve as the lock, and ablock of code to be guarded by that lock.A synchronized method is a shorthand for a synchronized block that spans an entire method body, and whose lock is
 the object on which the method is being invoked.
 
 '
@@ -72,7 +72,7 @@ Intrinsic locks in Java act as mutexes (or mutual exclusion locks), which means
 that at most one thread may own the lock. When thread A attempts to acquire a
 lock held by thread B, A must wait, or block, until B releases it. If B never releases the lock, A waits forever.
 
-** Reentrancy ** -> if a thread requests a lock that is already held by another thread, the requesting thread blocks. But because intrinsic locks are reentrant, if a thread tries to acquire a lock that it already holds, the request succeeds. Reentrancy means that locks are acquired on a per-thread rather than per-invocation basis. For each lock, an acquisition count and owning thread exists. When the count is 0, the resource is available, when a thread aquires it, the counter is incremented. When the thread exits the synchronization block, the count is decremented. When the count reaches 0, the lock is released. This is to facilitate synchronized methods/classes calling other synchronized methods/clases, that would otherwise deadlock.
+**Reentrancy** -> if a thread requests a lock that is already held by another thread, the requesting thread blocks. But because intrinsic locks are reentrant, if a thread tries to acquire a lock that it already holds, the request succeeds. Reentrancy means that locks are acquired on a per-thread rather than per-invocation basis. For each lock, an acquisition count and owning thread exists. When the count is 0, the resource is available, when a thread aquires it, the counter is incremented. When the thread exits the synchronization block, the count is decremented. When the count reaches 0, the lock is released. This is to facilitate synchronized methods/classes calling other synchronized methods/clases, that would otherwise deadlock.
 
 ### Section 2.4 - Guarding state with locks
 For each mutable state variable that may be accessed by more than one
@@ -93,7 +93,7 @@ one state variable, there is an additional requirement: each variable participat
 
 ## Goetz - Chapter 16
 ### Section 16.1.3 - Java memory model
-The JMM is defined as actions, which includes read, writes, locks, unlocks etc. The JMM defines a partial ordering called * Happens-before * on all actions within the program. There must be a happens-before relation between thread A and B. Without such a relation, the JVM is free to reorder them as it pleases.
+The JMM is defined as actions, which includes read, writes, locks, unlocks etc. The JMM defines a partial ordering called *Happens-before* on all actions within the program. There must be a happens-before relation between thread A and B. Without such a relation, the JVM is free to reorder them as it pleases.
 
 The rules for happens-before:
 - Program order rule (each action in a thread happens before every action in that thread that comes later in the program order)
@@ -107,15 +107,15 @@ The rules for happens-before:
 
 ## Herlihy - Chapter 1
 ### Section 1.2.1
-** Coordination protocol ** -> mutually compatible procedures for deciding what to do
+**Coordination protocol** -> mutually compatible procedures for deciding what to do
 
-** mutual exclusion ** -> 2 pets cannot be in the yard at the same time
+**mutual exclusion** -> 2 pets cannot be in the yard at the same time
 
-** deadlock freedom ** -> liveness property... will not encounter deadlock
+**deadlock freedom** -> liveness property... will not encounter deadlock
 
-** starvation freedom ** -> (lockout-freedom), will it eventually succeed, and not starve
+**starvation freedom** -> (lockout-freedom), will it eventually succeed, and not starve
 
-** waiting ** - > waiting for access to something that is not properly used
+**waiting** - > waiting for access to something that is not properly used
 
 ### Section 1.2.2
 Two kinds of communication occur naturally in concurrent systems:
