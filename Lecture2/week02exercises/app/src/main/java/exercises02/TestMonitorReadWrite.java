@@ -2,8 +2,6 @@ package exercises02;
 // For week 2
 // raup@itu.dk * 01/09/2021
 
-import exercises02.MonitorReadWrite;
-
 public class TestMonitorReadWrite{
 
     public TestMonitorReadWrite() {
