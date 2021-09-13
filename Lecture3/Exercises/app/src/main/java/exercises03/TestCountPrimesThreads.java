@@ -20,9 +20,9 @@ public class TestCountPrimesThreads {
     Mark7("countSequential", i -> countSequential(range));
     for (int c=1; c<=32; c++) {
     final int threadCount = c;
-    Mark7(String.format("countParallelN %7d", threadCount), 
+    Mark7(String.format("countParallelN %7d", threadCount),
           i -> countParallelN(range, threadCount));
-    //Mark7(String.format("countParallelNLocal %2d", threadCount), 
+    //Mark7(String.format("countParallelNLocal %2d", threadCount),
     //      i -> countParallelNLocal(range, threadCount));
     }
   }
@@ -39,7 +39,7 @@ public class TestCountPrimesThreads {
     long count = 0;
     final int from = 0, to = range;
     for (int i=from; i<to; i++)
-      if (isPrime(i)) 
+      if (isPrime(i))
         count++;
 
     return count;
@@ -48,21 +48,24 @@ public class TestCountPrimesThreads {
   // General parallel solution, using multiple threads
   private static long countParallelN(int range, int threadCount) {
     final int perThread = range / threadCount;
-    final LongCounter lc = new LongCounter();
+    final AtomicLong lc = new AtomicLong();
+    //final LongCounter lc = new LongCounter();
+
     Thread[] threads = new Thread[threadCount];
     for (int t=0; t<threadCount; t++) {
-        final int from = perThread * t, 
-            to = (t+1==threadCount) ? range : perThread * (t+1); 
+        final int from = perThread * t,
+            to = (t+1==threadCount) ? range : perThread * (t+1);
         threads[t] = new Thread( () -> {
                 for (int i=from; i<to; i++)
                     if (isPrime(i))
-                        lc.increment();
+                        //lc.increment();
+                        lc.getAndIncrement();
             });
     }
-    for (int t=0; t<threadCount; t++) 
+    for (int t=0; t<threadCount; t++)
       threads[t].start();
     try {
-      for (int t=0; t<threadCount; t++) 
+      for (int t=0; t<threadCount; t++)
         threads[t].join();
         //System.out.println("Primes: "+lc.get());
     } catch (InterruptedException exn) { }
@@ -80,12 +83,12 @@ public class TestCountPrimesThreads {
   public static double Mark6(String msg, IntToDoubleFunction f) {
     int n = 10, count = 1, totalCount = 0;
     double dummy = 0.0, runningTime = 0.0, st = 0.0, sst = 0.0;
-    do { 
+    do {
       count *= 2;
       st = sst = 0.0;
       for (int j=0; j<n; j++) {
         Timer t = new Timer();
-        for (int i=0; i<count; i++) 
+        for (int i=0; i<count; i++)
           dummy += f.applyAsDouble(i);
         runningTime = t.check();
         double time = runningTime * 1e9 / count;
@@ -101,16 +104,16 @@ public class TestCountPrimesThreads {
   public static double Mark7(String msg, IntToDoubleFunction f) {
     int n = 10, count = 1, totalCount = 0;
     double dummy = 0.0, runningTime = 0.0, st = 0.0, sst = 0.0;
-    do { 
+    do {
       count *= 2;
       st = sst = 0.0;
       for (int j=0; j<n; j++) {
         Timer t = new Timer();
-        for (int i=0; i<count; i++) 
+        for (int i=0; i<count; i++)
           dummy += f.applyAsDouble(i);
         runningTime = t.check();
-        double time = runningTime * 1e9 / count; 
-        st += time; 
+        double time = runningTime * 1e9 / count;
+        st += time;
         sst += time * time;
         totalCount += count;
       }
@@ -121,19 +124,19 @@ public class TestCountPrimesThreads {
   }
 
   public static void SystemInfo() {
-    System.out.printf("# OS:   %s; %s; %s%n", 
-                      System.getProperty("os.name"), 
-                      System.getProperty("os.version"), 
+    System.out.printf("# OS:   %s; %s; %s%n",
+                      System.getProperty("os.name"),
+                      System.getProperty("os.version"),
                       System.getProperty("os.arch"));
-    System.out.printf("# JVM:  %s; %s%n", 
-                      System.getProperty("java.vendor"), 
+    System.out.printf("# JVM:  %s; %s%n",
+                      System.getProperty("java.vendor"),
                       System.getProperty("java.version"));
     // The processor identifier works only on MS Windows:
-    System.out.printf("# CPU:  %s; %d \"cores\"%n", 
+    System.out.printf("# CPU:  %s; %d \"cores\"%n",
                       System.getenv("PROCESSOR_IDENTIFIER"),
                       Runtime.getRuntime().availableProcessors());
     java.util.Date now = new java.util.Date();
-    System.out.printf("# Date: %s%n", 
+    System.out.printf("# Date: %s%n",
       new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(now));
   }
 }

@@ -12,22 +12,22 @@ public class TestTimeThreads {
 
   public TestTimeThreads() {
     SystemInfo();
-    System.out.println("Mark 6 measurements");
+    System.out.println("Mark 7 measurements");
     final Point myPoint = new Point(42, 39);
-    Mark6("hashCode()", i -> myPoint.hashCode());
-    Mark6("Point creation", 
+    Mark7("hashCode()", i -> myPoint.hashCode());
+    Mark7("Point creation",
           i -> {
             Point p = new Point(i, i);
             return p.hashCode();
           });
     final AtomicInteger ai = new AtomicInteger();
-    Mark6("Thread's work", 
+    Mark7("Thread's work",
           i -> {
             for (int j=0; j<1000; j++)
               ai.getAndIncrement();
             return ai.doubleValue();
           });
-    Mark6("Thread create", 
+    Mark7("Thread create",
           i -> {
             Thread t = new Thread(() -> {
                 for (int j=0; j<1000; j++)
@@ -35,7 +35,7 @@ public class TestTimeThreads {
               });
             return t.hashCode();
           });
-    Mark6("Thread create start", 
+    Mark7("Thread create start",
           i -> {
             Thread t = new Thread(() -> {
               for (int j=0; j<1000; j++)
@@ -44,20 +44,20 @@ public class TestTimeThreads {
             t.start();
             return t.hashCode();
           });
-    Mark6("Thread create start join", 
+    Mark7("Thread create start join",
           i -> {
             Thread t = new Thread(() -> {
               for (int j=0; j<1000; j++)
                 ai.getAndIncrement();
               });
             t.start();
-            try { t.join(); } 
+            try { t.join(); }
             catch (InterruptedException exn) { }
             return t.hashCode();
           });
     System.out.printf("ai value = %d%n", ai.intValue());
     final Object obj = new Object();
-    Mark6("Uncontended lock", 
+    Mark7("Uncontended lock",
           i -> {
             synchronized (obj) {
               return i;
@@ -71,16 +71,16 @@ public class TestTimeThreads {
   public static double Mark6(String msg, IntToDoubleFunction f) {
     int n = 10, count = 1, totalCount = 0;
     double dummy = 0.0, runningTime = 0.0, st = 0.0, sst = 0.0;
-    do { 
+    do {
       count *= 2;
       st = sst = 0.0;
       for (int j=0; j<n; j++) {
         Timer t = new Timer();
-        for (int i=0; i<count; i++) 
+        for (int i=0; i<count; i++)
           dummy += f.applyAsDouble(i);
         runningTime = t.check();
         double time = runningTime * 1e9 / count; // nanoseconds
-        st += time; 
+        st += time;
         sst += time * time;
         totalCount += count;
       }
@@ -93,16 +93,16 @@ public class TestTimeThreads {
   public static double Mark7(String msg, IntToDoubleFunction f) {
     int n = 10, count = 1, totalCount = 0;
     double dummy = 0.0, runningTime = 0.0, st = 0.0, sst = 0.0;
-    do { 
+    do {
       count *= 2;
       st = sst = 0.0;
       for (int j=0; j<n; j++) {
         Timer t = new Timer();
-        for (int i=0; i<count; i++) 
+        for (int i=0; i<count; i++)
           dummy += f.applyAsDouble(i);
         runningTime = t.check();
         double time = runningTime * 1e9 / count; // nanoseconds
-        st += time; 
+        st += time;
         sst += time * time;
         totalCount += count;
       }
@@ -113,19 +113,19 @@ public class TestTimeThreads {
   }
 
   public static void SystemInfo() {
-    System.out.printf("# OS:   %s; %s; %s%n", 
-                      System.getProperty("os.name"), 
-                      System.getProperty("os.version"), 
+    System.out.printf("# OS:   %s; %s; %s%n",
+                      System.getProperty("os.name"),
+                      System.getProperty("os.version"),
                       System.getProperty("os.arch"));
-    System.out.printf("# JVM:  %s; %s%n", 
-                      System.getProperty("java.vendor"), 
+    System.out.printf("# JVM:  %s; %s%n",
+                      System.getProperty("java.vendor"),
                       System.getProperty("java.version"));
     // The processor identifier works only on MS Windows:
-    System.out.printf("# CPU:  %s; %d \"cores\"%n", 
+    System.out.printf("# CPU:  %s; %d \"cores\"%n",
                       System.getenv("PROCESSOR_IDENTIFIER"),
                       Runtime.getRuntime().availableProcessors());
     java.util.Date now = new java.util.Date();
-    System.out.printf("# Date: %s%n", 
+    System.out.printf("# Date: %s%n",
       new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(now));
   }
 }
@@ -135,7 +135,7 @@ public class TestTimeThreads {
  * @author Brian Goetz and Tim Peierls
  */
 class Point {
-  public final int x, y;  
+  public final int x, y;
   public Point(int x, int y) {
     this.x = x; this.y = y;
   }
