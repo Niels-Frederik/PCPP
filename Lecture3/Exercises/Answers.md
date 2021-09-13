@@ -1,6 +1,6 @@
+# Exercise 3
 
-#Linux Computer
-**Note**\
+## Linux Computer
 For all of the following runs, the current system information applies:
 * OS:   Linux; 5.13.13-arch1-1; amd64
 * JVM:  N/A; 16.0.2
@@ -8,7 +8,6 @@ For all of the following runs, the current system information applies:
 
 **Mark 1**\
 0.005 s     0.2ns
-
 
 **Mark 2**\
 24.8 ns
@@ -93,13 +92,15 @@ asin                                 79.4 ns       0.33    4194304\
 acos                                 80.2 ns       6.70    4194304\
 atan                                 21.2 ns       0.56   16777216
 
-#Macbook
+# Mac OS Computer
+
+For all of the following runs, the current system information applies:
+* OS:   Mac OS X; 11.3.1; x86\_64
+* JVM:  Homebrew; 16.0.2
+* CPU:  Intel i5-7360U (4) @ 3.600GHz
+
 **Mark1**\
-# OS:   Mac OS X; 11.3.1; x86_64
-# JVM:  Homebrew; 16.0.2
-# CPU:  null; 8 "cores"
-# Date: 2021-09-13T12:16:38+0200
- 0.009 s     0.4ns 
+ 0.009 s     0.4ns
 
 **Mark2**\
   25.8 ns
