@@ -54,18 +54,18 @@ For all of the following runs, the current system information applies:
 
 
 **Mark 6**\
-multiply                            623.4 ns     904.36          2\\
-multiply                            507.4 ns     142.53          4\\
-multiply                            439.0 ns     115.97          8\\
-multiply                            602.8 ns     617.46         16\\
-multiply                            275.6 ns     147.71         32\\
-multiply                             76.2 ns      19.99         64\\
-multiply                             93.9 ns      91.50        128\\
-multiply                             79.5 ns      22.79        256\\
-multiply                             70.3 ns      12.99        512\\
-multiply                             42.5 ns       3.12       1024\\
-multiply                             55.2 ns       8.20       2048\\
-multiply                             58.2 ns       2.89       4096\\
+multiply                            623.4 ns     904.36          2\
+multiply                            507.4 ns     142.53          4\
+multiply                            439.0 ns     115.97          8\
+multiply                            602.8 ns     617.46         16\
+multiply                            275.6 ns     147.71         32\
+multiply                             76.2 ns      19.99         64\
+multiply                             93.9 ns      91.50        128\
+multiply                             79.5 ns      22.79        256\
+multiply                             70.3 ns      12.99        512\
+multiply                             42.5 ns       3.12       1024\
+multiply                             55.2 ns       8.20       2048\
+multiply                             58.2 ns       2.89       4096\
 multiply                             35.0 ns       9.23       8192\
 multiply                             31.1 ns       3.16      16384\
 multiply                             29.5 ns       0.75      32768\
