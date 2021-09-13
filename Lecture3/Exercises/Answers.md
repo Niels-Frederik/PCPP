@@ -1,9 +1,8 @@
-# Exercise 3
+# Exercise 3.1
 
 ## Linux Computer
-For all of the following runs, the current system information applies:
 * OS:   Linux; 5.13.13-arch1-1; amd64
-* JVM:  N/A; 16.0.2
+* JVM:  OpenJDK; 16.0.2
 * CPU:  Intel i5-7360U (4) @ 3.600GHz
 
 **Mark 1**\
@@ -94,7 +93,6 @@ atan                                 21.2 ns       0.56   16777216
 
 # Mac OS Computer
 
-For all of the following runs, the current system information applies:
 * OS:   Mac OS X; 11.3.1; x86\_64
 * JVM:  Homebrew; 16.0.2
 * CPU:  Intel i5-7360U (4) @ 3.600GHz
