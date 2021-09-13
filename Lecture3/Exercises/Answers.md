@@ -95,7 +95,7 @@ atan                                 21.2 ns       0.56   16777216
 
 * OS:   Mac OS X; 11.3.1; x86\_64
 * JVM:  Homebrew; 16.0.2
-* CPU:  Intel i5-7360U (4) @ 3.600GHz
+* CPU:  2 GHz Quad-Core Intel Core i5
 
 **Mark1**\
  0.009 s     0.4ns
