@@ -5,11 +5,11 @@ For all of the following runs, the current system information applies:
 * CPU:  Intel i5-7360U (4) @ 3.600GHz
 
 **Mark 1**\
-0.005 s     0.2ns\
+0.005 s     0.2ns
 
 
 **Mark 2**\
-24.8 ns\
+24.8 ns
 
 **Mark 3**\
 25.2 ns\
@@ -21,10 +21,10 @@ For all of the following runs, the current system information applies:
 24.1 ns\
 24.7 ns\
 24.3 ns\
-24.2 ns\
+24.2 ns
 
 **Mark 4**\
-25.1 ns +/-  0.575\
+25.1 ns +/-  0.575
 
 **Mark 5**\
 360.1 ns +/-   499.95          2\
@@ -50,7 +50,7 @@ For all of the following runs, the current system information applies:
 25.4 ns +/-     0.04    2097152\
 25.6 ns +/-     0.26    4194304\
 25.2 ns +/-     0.31    8388608\
-24.9 ns +/-     0.45   16777216\
+24.9 ns +/-     0.45   16777216
 
 
 **Mark 6**\
@@ -77,9 +77,9 @@ multiply                             25.4 ns       0.02    1048576\
 multiply                             26.7 ns       2.18    2097152\
 multiply                             25.6 ns       0.27    4194304\
 multiply                             25.5 ns       0.17    8388608\
-multiply                             25.3 ns       0.36   16777216\
-\
-\
+multiply                             25.3 ns       0.36   16777216
+
+
 **Mark 7**\
 pow                                  20.1 ns       0.25   16777216\
 exp                                  22.2 ns       0.07   16777216\
@@ -89,4 +89,4 @@ cos                                  14.8 ns       0.08   16777216\
 tan                                  20.4 ns       0.05   16777216\
 asin                                 79.4 ns       0.33    4194304\
 acos                                 80.2 ns       6.70    4194304\
-atan                                 21.2 ns       0.56   16777216\
+atan                                 21.2 ns       0.56   16777216
