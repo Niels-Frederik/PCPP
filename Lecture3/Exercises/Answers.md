@@ -91,8 +91,7 @@ asin                                 79.4 ns       0.33    4194304\
 acos                                 80.2 ns       6.70    4194304\
 atan                                 21.2 ns       0.56   16777216
 
-# Mac OS Computer
-
+## Mac OS Computer
 * OS:   Mac OS X; 11.3.1; x86\_64
 * JVM:  Homebrew; 16.0.2
 * CPU:  2 GHz Quad-Core Intel Core i5
