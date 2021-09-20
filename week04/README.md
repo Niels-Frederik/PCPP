@@ -10,7 +10,6 @@ The goals of this lecture are:
 * Explain and reason about the producer-consumer problem.
 
 ## Readings 
-
 * Goetz:
   * Chapter 3, Sections 3.4 and 3.5. *(it was part of th readings for last week)*.
   * Chapter 4, complete.
