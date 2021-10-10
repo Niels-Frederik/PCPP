@@ -1,26 +1,24 @@
-package exercises03;
+package exercises06;
 // Simple microbenchmark setups
 // sestoft@itu.dk * 2013-06-02, 2015-09-15
 // jst@itu.dk * 2021-08-31 Moved code to contructor to follow Raul style
 
 import java.util.function.IntToDoubleFunction;
-import java.util.function.IntSupplier;
 class Benchmark {
   public static void main(String[] args) { new Benchmark(); }
-
+  
   public Benchmark() {
-    SystemInfo();
+    //SystemInfo();
     //Mark0();
     //Mark1();
-    //Mark2();
-    //Mark3();
-    //Mark4();
-    //Mark5();
+    // Mark2();
+    // Mark3();
+    // Mark4();
+    // Mark5();
     //Mark6("multiply", i -> multiply(i));
-    // Mark6("multiply", Benchmark::multiply); // same as line above, for motivation see here https://docs.oracle.com/javase/tutorial/java/javaOO/methodreferences.html
-     //Mark7("multiply", Benchmark::multiply);
-//MathFunctionBenchmarks();
-    perfTest();
+    //Mark6("multiply", Benchmark::multiply); // same as line above, for motivation see here https://docs.oracle.com/javase/tutorial/java/javaOO/methodreferences.html
+    // Mark7("multiply", Benchmark::multiply);
+    // MathFunctionBenchmarks();
     // final java.util.Random rnd = new java.util.Random();
     // final int n = 1638400;
     // Mark8("random_index", i -> rnd.nextInt(n));
@@ -28,36 +26,20 @@ class Benchmark {
     // SearchScalabilityBenchmarks1();
     // SearchScalabilityBenchmarks2();
     // GetPseudorandomItems();
-    // SortingBenchmarks();
-    // SortingScalabilityBenchmarks();
+    SortingBenchmarks();
+    //SortingScalabilityBenchmarks();
   }
 
   // ========== Example functions and benchmarks ==========
-  //
-  //
-
-  private static void perfTest()
-  {
-    PerfTest pt = new PerfTest();
-    Mark7v2("volatile int", () -> pt.vInc());
-    PerfTest pt2 = new PerfTest();
-    Mark7v2("int", () -> pt2.inc());
-  }
-
-  private static void transactionTest()
-  {
-    AccountExperiments ae = new AccountExperiments();
-    Mark7v2("test", () -> ae.)
-  }
 
   private static double multiply(int i) {
     double x = 1.1 * (double)(i & 0xFF);
-     return x * x * x * x * x * x * x * x * x * x
+     return x * x * x * x * x * x * x * x * x * x 
           * x * x * x * x * x * x * x * x * x * x;
   }
   private static double multiplyL(long i) {
     double x = 1.1 * (double)(i & 0xFFL);
-     return x * x * x * x * x * x * x * x * x * x
+     return x * x * x * x * x * x * x * x * x * x 
           * x * x * x * x * x * x * x * x * x * x;
   }
 
@@ -76,9 +58,9 @@ class Benchmark {
   private static void SearchBenchmarks() {
     final int[] intArray = SearchAndSort.fillIntArray(10_000);  // sorted [0,1,...]
     final int successItem = 4900, failureItem = 14000;
-    Mark7("linear_search_success",
+    Mark7("linear_search_success", 
           i -> SearchAndSort.linearSearch(successItem, intArray));
-    Mark7("binary_search_success",
+    Mark7("binary_search_success", 
           i -> SearchAndSort.binarySearch(successItem, intArray));
   }
 
@@ -86,21 +68,21 @@ class Benchmark {
     for (int size = 100; size <= 10_000_000; size *= 2) {
       final int[] intArray = SearchAndSort.fillIntArray(size);  // sorted [0,1,...]
       final int successItem = (int)(0.49 * size);
-      Mark8("binary_search_success",
+      Mark8("binary_search_success", 
             String.format("%8d", size),
-            i -> SearchAndSort.binarySearch(successItem, intArray));
+            i -> SearchAndSort.binarySearch(successItem, intArray)); 
     }
   }
 
   private static void SearchScalabilityBenchmarks2() {
     for (int size = 100; size <= 10_000_000; size *= 2) {
       final int[] intArray = SearchAndSort.fillIntArray(size);  // sorted [0,1,...]
-      final int[] items = SearchAndSort.fillIntArray(size);
+      final int[] items = SearchAndSort.fillIntArray(size); 
       final int n = size;
       SearchAndSort.shuffle(items);
-      Mark8("binary_search_success",
+      Mark8("binary_search_success", 
             String.format("%8d", size),
-            i -> {
+            i -> { 
               int successItem = items[i % n];
               return SearchAndSort.binarySearch(successItem, intArray);
             });
@@ -109,70 +91,70 @@ class Benchmark {
 
   private static void GetPseudorandomItems() {
     for (int size = 100; size <= 10_000_000; size *= 2) {
-      final int[] items = SearchAndSort.fillIntArray(size);
+      final int[] items = SearchAndSort.fillIntArray(size); 
       final int n = size;
       SearchAndSort.shuffle(items);
-      Mark8("get_pseudorandom_items",
+      Mark8("get_pseudorandom_items", 
             String.format("%8d", size),
-            i -> {
+            i -> { 
               int successItem = items[i % n];
-              return successItem; });
+              return successItem; });      
     }
   }
 
   private static void SortingBenchmarks() {
-    final int[] intArray = SearchAndSort.fillIntArray(10_000);
-    Mark7("shuffle int",
+    final int[] intArray = SearchAndSort.fillIntArray(100_000);
+    Mark7("shuffle int", 
           i -> { SearchAndSort.shuffle(intArray); return 0.0; });
-    Mark8Setup("shuffle",
-       new Benchmarkable() {
-         public double applyAsDouble(int i)
+    Mark8Setup("shuffle", 
+       new Benchmarkable() { 
+         public double applyAsDouble(int i) 
          { SearchAndSort.shuffle(intArray); return 0.0; } });
-    Mark8Setup("selection_sort",
-       new Benchmarkable() {
+    Mark8Setup("selection_sort", 
+       new Benchmarkable() { 
          public void setup() { SearchAndSort.shuffle(intArray); }
-         public double applyAsDouble(int i)
+         public double applyAsDouble(int i) 
          { SearchAndSort.selsort(intArray); return 0.0; } });
-    Mark8Setup("quicksort",
-       new Benchmarkable() {
+    Mark8Setup("quicksort", 
+       new Benchmarkable() { 
          public void setup() { SearchAndSort.shuffle(intArray); }
-         public double applyAsDouble(int i)
+         public double applyAsDouble(int i) 
          { SearchAndSort.quicksort(intArray); return 0.0; } });
-    Mark8Setup("heapsort",
-       new Benchmarkable() {
+    Mark8Setup("heapsort", 
+       new Benchmarkable() { 
          public void setup() { SearchAndSort.shuffle(intArray); }
-         public double applyAsDouble(int i)
+         public double applyAsDouble(int i) 
          { SearchAndSort.heapsort(intArray); return 0.0; } });
   }
 
   private static void SortingScalabilityBenchmarks() {
     for (int size = 100; size <= 50000; size *= 2) {
       final int[] intArray = SearchAndSort.fillIntArray(size);
-      Mark8Setup("selection_sort",
+      Mark8Setup("selection_sort", 
                  String.format("%8d", size),
-                 new Benchmarkable() {
+                 new Benchmarkable() { 
                    public void setup() { SearchAndSort.shuffle(intArray); }
-                   public double applyAsDouble(int i)
+                   public double applyAsDouble(int i) 
                    { SearchAndSort.selsort(intArray); return 0.0; } });
     }
     System.out.printf("%n%n"); // data set divider
     for (int size = 100; size <= 2000000; size *= 2) {
       final int[] intArray = SearchAndSort.fillIntArray(size);
-      Mark8Setup("quicksort",
+      Mark8Setup("quicksort", 
                  String.format("%8d", size),
-                 new Benchmarkable() {
+                 new Benchmarkable() { 
                    public void setup() { SearchAndSort.shuffle(intArray); }
-                   public double applyAsDouble(int i)
+                   public double applyAsDouble(int i) 
                    { SearchAndSort.quicksort(intArray); return 0.0; } });
     }
     System.out.printf("%n%n"); // data set divider
     for (int size = 100; size <= 2000000; size *= 2) {
       final int[] intArray = SearchAndSort.fillIntArray(size);
-      Mark8Setup("heapsort",
+      Mark8Setup("heapsort", 
                  String.format("%8d", size),
-                 new Benchmarkable() {
+                 new Benchmarkable() { 
                    public void setup() { SearchAndSort.shuffle(intArray); }
-                   public double applyAsDouble(int i)
+                   public double applyAsDouble(int i) 
                    { SearchAndSort.heapsort(intArray); return 0.0; } });
     }
   }
@@ -180,19 +162,19 @@ class Benchmark {
   // ========== Infrastructure code ==========
 
   public static void SystemInfo() {
-    System.out.printf("# OS:   %s; %s; %s%n",
-                      System.getProperty("os.name"),
-                      System.getProperty("os.version"),
+    System.out.printf("# OS:   %s; %s; %s%n", 
+                      System.getProperty("os.name"), 
+                      System.getProperty("os.version"), 
                       System.getProperty("os.arch"));
-    System.out.printf("# JVM:  %s; %s%n",
-                      System.getProperty("java.vendor"),
+    System.out.printf("# JVM:  %s; %s%n", 
+                      System.getProperty("java.vendor"), 
                       System.getProperty("java.version"));
     // The processor identifier works only on MS Windows:
-    System.out.printf("# CPU:  %s; %d \"cores\"%n",
+    System.out.printf("# CPU:  %s; %d \"cores\"%n", 
                       System.getenv("PROCESSOR_IDENTIFIER"),
                       Runtime.getRuntime().availableProcessors());
     java.util.Date now = new java.util.Date();
-    System.out.printf("# Date: %s%n",
+    System.out.printf("# Date: %s%n", 
       new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(now));
   }
 
@@ -210,14 +192,14 @@ class Benchmark {
         double dummy = multiply( i);
     }
     double time = t.check()  ; /// count;
-    System.out.printf("%6.3f s  %6.1fns %n", time, time*1e9/count);
+    System.out.printf("%6.3f s  %6.1f ns %n", time, time*1e9/count);
   }
 
   public static double Mark2() {
     Timer t = new Timer();
     int count = 100_000_000;
     double dummy = 0.0;
-    for (int i=0; i<count; i++)
+    for (int i=0; i<count; i++) 
       dummy += multiply(i);
     double time = t.check() * 1e9 / count;
     System.out.printf("%6.1f ns%n", time);
@@ -230,7 +212,7 @@ class Benchmark {
     double dummy = 0.0;
     for (int j=0; j<n; j++) {
       Timer t = new Timer();
-      for (int i=0; i<count; i++)
+      for (int i=0; i<count; i++) 
         dummy += multiply(i);
       double time = t.check() * 1e9 / count;
       System.out.printf("%6.1f ns%n", time);
@@ -245,10 +227,10 @@ class Benchmark {
     double st = 0.0, sst = 0.0;
     for (int j=0; j<n; j++) {
       Timer t = new Timer();
-      for (int i=0; i<count; i++)
+      for (int i=0; i<count; i++) 
         dummy += multiply(i);
       double time = t.check() * 1e9 / count;
-      st += time;
+      st += time; 
       sst += time * time;
     }
     double mean = st/n, sdev = Math.sqrt((sst - mean*mean*n)/(n-1));
@@ -264,11 +246,11 @@ class Benchmark {
       st = sst = 0.0;
       for (int j=0; j<n; j++) {
         Timer t = new Timer();
-        for (int i=0; i<count; i++)
+        for (int i=0; i<count; i++) 
           dummy += multiply(i);
         runningTime = t.check();
         double time = runningTime * 1e9 / count;
-        st += time;
+        st += time; 
         sst += time * time;
         totalCount += count;
       }
@@ -281,16 +263,16 @@ class Benchmark {
   public static double Mark6(String msg, IntToDoubleFunction f) {
     int n = 10, count = 1, totalCount = 0;
     double dummy = 0.0, runningTime = 0.0, st = 0.0, sst = 0.0;
-    do {
+    do { 
       count *= 2;
       st = sst = 0.0;
       for (int j=0; j<n; j++) {
         Timer t = new Timer();
-        for (int i=0; i<count; i++)
+        for (int i=0; i<count; i++) 
           dummy += f.applyAsDouble(i);
         runningTime = t.check();
         double time = runningTime * 1e9 / count;
-        st += time;
+        st += time; 
         sst += time * time;
         totalCount += count;
       }
@@ -303,16 +285,16 @@ class Benchmark {
   public static double Mark7(String msg, IntToDoubleFunction f) {
     int n = 10, count = 1, totalCount = 0;
     double dummy = 0.0, runningTime = 0.0, st = 0.0, sst = 0.0;
-    do {
+    do { 
       count *= 2;
       st = sst = 0.0;
       for (int j=0; j<n; j++) {
         Timer t = new Timer();
-        for (int i=0; i<count; i++)
+        for (int i=0; i<count; i++) 
           dummy += f.applyAsDouble(i);
         runningTime = t.check();
         double time = runningTime * 1e9 / count;
-        st += time;
+        st += time; 
         sst += time * time;
         totalCount += count;
       }
@@ -322,43 +304,20 @@ class Benchmark {
     return dummy / totalCount;
   }
 
- public static double Mark7v2(String msg, IntSupplier f) {
-    int n = 10, count = 1, totalCount = 0;
-    double dummy = 0.0, runningTime = 0.0, st = 0.0, sst = 0.0;
-    do {
-      count *= 2;
-      st = sst = 0.0;
-      for (int j=0; j<n; j++) {
-        Timer t = new Timer();
-        for (int i=0; i<count; i++)
-          //dummy += f.applyAsDouble(i);
-          dummy = f.getAsInt();
-        runningTime = t.check();
-        double time = runningTime * 1e9 / count;
-        st += time;
-        sst += time * time;
-        totalCount += count;
-      }
-    } while (runningTime < 0.25 && count < Integer.MAX_VALUE/2);
-    double mean = st/n, sdev = Math.sqrt((sst - mean*mean*n)/(n-1));
-    System.out.printf("%-25s %15.1f ns %10.2f %10d%n", msg, mean, sdev, count);
-    return dummy / totalCount;
-  }
-
-  public static double Mark8(String msg, String info, IntToDoubleFunction f,
+  public static double Mark8(String msg, String info, IntToDoubleFunction f, 
                              int n, double minTime) {
     int count = 1, totalCount = 0;
     double dummy = 0.0, runningTime = 0.0, st = 0.0, sst = 0.0;
-    do {
+    do { 
       count *= 2;
       st = sst = 0.0;
       for (int j=0; j<n; j++) {
         Timer t = new Timer();
-        for (int i=0; i<count; i++)
+        for (int i=0; i<count; i++) 
           dummy += f.applyAsDouble(i);
         runningTime = t.check();
         double time = runningTime * 1e9 / count;
-        st += time;
+        st += time; 
         sst += time * time;
         totalCount += count;
       }
@@ -376,11 +335,11 @@ class Benchmark {
     return Mark8(msg, info, f, 10, 0.25);
   }
 
-  public static double Mark8Setup(String msg, String info, Benchmarkable f,
+  public static double Mark8Setup(String msg, String info, Benchmarkable f, 
                                   int n, double minTime) {
     int count = 1, totalCount = 0;
     double dummy = 0.0, runningTime = 0.0, st = 0.0, sst = 0.0;
-    do {
+    do { 
       count *= 2;
       st = sst = 0.0;
       for (int j=0; j<n; j++) {
@@ -393,10 +352,10 @@ class Benchmark {
         }
         runningTime = t.check();
         double time = runningTime * 1e9 / count;
-        st += time;
+        st += time; 
         sst += time * time;
         totalCount += count;
-      }
+      };
     } while (runningTime < minTime && count < Integer.MAX_VALUE/2);
     double mean = st/n, sdev = Math.sqrt((sst - mean*mean*n)/(n-1));
     System.out.printf("%-25s %s%15.1f ns %10.2f %10d%n", msg, info, mean, sdev, count);

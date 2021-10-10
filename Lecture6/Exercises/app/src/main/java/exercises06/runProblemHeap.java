@@ -1,3 +1,4 @@
+package exercises06;
 //Quicksort implemented with Executors
 //Version jst@itu.dk 13/09 - 2021
 

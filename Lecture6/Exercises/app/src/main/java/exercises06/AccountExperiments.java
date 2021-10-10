@@ -1,42 +1,34 @@
+package exercises06;
 import java.util.Random;
-public class ThreadsAccountExperimentsMany {
-
-  static final int N = 10; 
+public class AccountExperiments {
+  static final int N = 10; // Number of accounts
   static final int NO_TRANSACTION=5;
-  static final int NO_THREADS = 10;
-  static final Account[] accounts = new Account[N];
-  static final Thread[] threads = new Thread[NO_THREADS];
-  static Random rnd = new Random();
   
-  public static void main(String[] args){ new ThreadsAccountExperimentsMany(); }
+  static final Account[] accounts = new Account[N];
+  static final Random rnd = new Random();
 
-  public ThreadsAccountExperimentsMany(){
+  public static void main(String[] args){ new AccountExperiments(); }
+   
+  public AccountExperiments() { 
+  // Create empty accounts
     for( int i = 0; i < N; i++){
       accounts[i] = new Account(i);
     }
-    for( int i = 0; i<NO_THREADS; i++){
-      try{ (threads[i] = new Thread( () -> doNTransactions(NO_TRANSACTION) )).start();}
-      catch(Error ex){
-        System.out.println("At i = " + i + " I got error: " + ex);
-        System.exit(0);
-      }
-    }
-    for( int i = 0; i<NO_THREADS; i++){
-      try {threads[i].join();} catch(Exception dummy){};
-    }
+    //insert code using Mark7 to measure execution time
+    //...
   }
-  
-  private static void doNTransactions(int noTransactions){
+
+  private static double doNTransactions(int noTransactions){
     for(int i = 0; i<noTransactions; i++){
-      long amount = rnd.nextInt(5000)+100;
+      long amount = rnd.nextInt(5000)+100; // Just a random possitive amount
       int source = rnd.nextInt(N);
       int target = (source + rnd.nextInt(N-2)+1) % N; // make sure target <> source
       doTransaction( new Transaction( amount, accounts[source], accounts[target]));
     }
+    return 0.0;
   }
   
   private static void doTransaction(Transaction t){
-    System.out.println(t);
     t.transfer();
   }
   
@@ -50,15 +42,9 @@ public class ThreadsAccountExperimentsMany {
     }
     
     public void transfer(){
-      Account min = accounts[Math.min(source.id, target.id)];
-      Account max = accounts[Math.max(source.id, target.id)];
-      synchronized(min){
-        synchronized(max){
-          source.withdraw(amount);
-          try{Thread.sleep(50);} catch(Exception e){}; // Simulate transaction time
-          target.deposit(amount);
-        }
-      }
+      source.withdraw(amount);
+      try{Thread.sleep(50);} catch(Exception e){}; // Simulate transaction time
+      target.deposit(amount);
     }
     
     public String toString(){
