@@ -80,7 +80,6 @@ public class TestCountPrimesThreads{
 
   // General parallel solution, using multiple threads
   private static long countParallelNLocal(int range, int threadCount) {
-    AtomicLong result = new AtomicLong();
     ExecutorService executor = Executors.newFixedThreadPool(threadCount);
     List<CompletableFuture> futures = new ArrayList<>();
     final int perThread = range / threadCount;
@@ -89,24 +88,16 @@ public class TestCountPrimesThreads{
       final int to = (t + 1 == threadCount) ? range : perThread * (t + 1);
       futures.add(CompletableFuture.runAsync(() -> isPrimeRange(from, to), executor));
     }
-    //var allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[futures.size()])).thenApply(x -> futures.stream().map(CompletableFuture::join).collect(Collectors.toList()));
     var allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[futures.size()]));
 
     try {
       allFutures.get();
-      futures.forEach(x -> {
-        try {
-          result.addAndGet((Long) x.get());
-        } catch (Exception e) {
-        }
-      });
-      //var sresult = futures.stream().map(future -> (Long) future.join()).mapToLong().sum();
     } catch (Exception e) {
       e.printStackTrace();
     } finally {
       executor.shutdown();
     }
-    return result.get();
+    return 0;
   }
 
   // --- Benchmarking infrastructure ---
