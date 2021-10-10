@@ -44,12 +44,6 @@ class Benchmark {
     Mark7v2("int", () -> pt2.inc());
   }
 
-  private static void transactionTest()
-  {
-    AccountExperiments ae = new AccountExperiments();
-    Mark7v2("test", () -> ae.)
-  }
-
   private static double multiply(int i) {
     double x = 1.1 * (double)(i & 0xFF);
      return x * x * x * x * x * x * x * x * x * x

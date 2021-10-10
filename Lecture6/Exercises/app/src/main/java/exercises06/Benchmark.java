@@ -26,11 +26,17 @@ class Benchmark {
     // SearchScalabilityBenchmarks1();
     // SearchScalabilityBenchmarks2();
     // GetPseudorandomItems();
-    SortingBenchmarks();
-    //SortingScalabilityBenchmarks();
+    // SortingBenchmarks();
+    // SortingScalabilityBenchmarks();
+    transferBenchmark();
   }
 
   // ========== Example functions and benchmarks ==========
+
+  private static void transferBenchmark()
+  {
+    Mark7("Account transfer", i -> AccountExperiments.doNTransactions(1000));
+  }
 
   private static double multiply(int i) {
     double x = 1.1 * (double)(i & 0xFF);

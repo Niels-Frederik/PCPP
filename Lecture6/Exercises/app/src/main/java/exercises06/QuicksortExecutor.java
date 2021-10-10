@@ -1,7 +1,6 @@
+package exercises06;
 //QuickSort using Java Executor to simulate Problem Heap
 //Version jst@itu.dk 19/09 - 2021
-
-package exercises06;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

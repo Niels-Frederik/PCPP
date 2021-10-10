@@ -1,5 +1,9 @@
 package exercises06;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import java.util.concurrent.*;
+
 public class ThreadsAccountExperimentsMany {
 
   static final int N = 10; 
@@ -8,6 +12,7 @@ public class ThreadsAccountExperimentsMany {
   static final Account[] accounts = new Account[N];
   static final Thread[] threads = new Thread[NO_THREADS];
   static Random rnd = new Random();
+  public static ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
   
   public static void main(String[] args){ new ThreadsAccountExperimentsMany(); }
 
@@ -28,20 +33,31 @@ public class ThreadsAccountExperimentsMany {
   }
   
   private static void doNTransactions(int noTransactions){
+    List<CompletableFuture> futures = new ArrayList<>();
     for(int i = 0; i<noTransactions; i++){
       long amount = rnd.nextInt(5000)+100;
       int source = rnd.nextInt(N);
       int target = (source + rnd.nextInt(N-2)+1) % N; // make sure target <> source
-      doTransaction( new Transaction( amount, accounts[source], accounts[target]));
+      futures.add(doTransaction(new Transaction(amount, accounts[source], accounts[target])));
+    }
+    CompletableFuture<Void> allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[futures.size()]));
+
+    try {
+      allFutures.get();
+    } catch (Exception e) {
+      e.printStackTrace();
+    } finally {
+      executor.shutdown();
     }
   }
   
-  private static void doTransaction(Transaction t){
+  private static CompletableFuture doTransaction(Transaction t){
     System.out.println(t);
-    t.transfer();
+    CompletableFuture<?> future = CompletableFuture.runAsync(t, executor);
+    return future;
   }
   
-  static class Transaction {
+  static class Transaction implements Runnable{
     final Account source, target;
     final long amount;
     Transaction(long amount, Account source, Account target){
@@ -55,6 +71,10 @@ public class ThreadsAccountExperimentsMany {
       Account max = accounts[Math.max(source.id, target.id)];
       synchronized(min){
         synchronized(max){
+      //Account min = accounts[source.id];
+      //Account max = accounts[target.id];
+      //synchronized(min){
+      //  synchronized(max){
           source.withdraw(amount);
           try{Thread.sleep(50);} catch(Exception e){}; // Simulate transaction time
           target.deposit(amount);
@@ -64,6 +84,11 @@ public class ThreadsAccountExperimentsMany {
     
     public String toString(){
       return "Transfer " + amount + " from " + source.id + " to " + target.id;
+    }
+
+    @Override
+    public void run() {
+      transfer();
     }
   }
 

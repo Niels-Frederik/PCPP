@@ -18,7 +18,7 @@ public class AccountExperiments {
     //...
   }
 
-  private static double doNTransactions(int noTransactions){
+  public static double doNTransactions(int noTransactions){
     for(int i = 0; i<noTransactions; i++){
       long amount = rnd.nextInt(5000)+100; // Just a random possitive amount
       int source = rnd.nextInt(N);

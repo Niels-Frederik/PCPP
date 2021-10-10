@@ -4,10 +4,13 @@ package exercises06;
 // sestoft@itu.dk * 2014-08-31, 2015-09-15
 // modified rikj@itu.dk 2017-09-20
 // modified jst@itu.dk 2021-09-24
-import java.util.function.IntToDoubleFunction;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.IntToDoubleFunction;
 
-public class TestCountPrimesThreads {
+public class TestCountPrimesThreads{
   public static void main(String[] args) { new TestCountPrimesThreads(); }
 
   public TestCountPrimesThreads() {
@@ -15,8 +18,8 @@ public class TestCountPrimesThreads {
     Mark7("countSequential", i -> countSequential(range));
     for (int c=1; c<=32; c++) {
     final int threadCount = c;
-      Mark7(String.format("countParallelN %2d", threadCount), 
-            i -> countParallelN(range, threadCount));
+      //Mark7(String.format("countParallelN %2d", threadCount),
+      //      i -> countParallelN(range, threadCount));
 
       Mark7(String.format("countParallelNLocal %2d", threadCount), 
             i -> countParallelNLocal(range, threadCount));
@@ -28,6 +31,17 @@ public class TestCountPrimesThreads {
     while (k * k <= n && n % k != 0)
       k++;
     return n >= 2 && k * k > n;
+  }
+
+  private static long isPrimeRange(int from, int to) {
+    long count = 0;
+    for (int i = from; i <= to; i++) {
+      int k = 2;
+      while (k * k <= i && i % k != 0)
+        k++;
+      if (i >= 2 && k * k > i) count++;
+    }
+    return count;
   }
 
   // Sequential solution
@@ -66,31 +80,33 @@ public class TestCountPrimesThreads {
 
   // General parallel solution, using multiple threads
   private static long countParallelNLocal(int range, int threadCount) {
+    AtomicLong result = new AtomicLong();
+    ExecutorService executor = Executors.newFixedThreadPool(threadCount);
+    List<CompletableFuture> futures = new ArrayList<>();
     final int perThread = range / threadCount;
-    final long[] results = new long[threadCount];
-    Thread[] threads = new Thread[threadCount];
-    for (int t=0; t<threadCount; t++) {
-      final int from = perThread * t, 
-        to = (t+1==threadCount) ? range : perThread * (t+1); 
-      final int threadNo = t;
-      threads[t] = new Thread( ()-> {
-        long count = 0;
-        for (int i=from; i<to; i++)
-          if (isPrime(i))
-            count++;
-        results[threadNo] = count;
-      });
+    for (int t = 0; t < threadCount; t++) {
+      final int from = perThread * t;
+      final int to = (t + 1 == threadCount) ? range : perThread * (t + 1);
+      futures.add(CompletableFuture.runAsync(() -> isPrimeRange(from, to), executor));
     }
-    for (int t=0; t<threadCount; t++) 
-      threads[t].start();
+    //var allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[futures.size()])).thenApply(x -> futures.stream().map(CompletableFuture::join).collect(Collectors.toList()));
+    var allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[futures.size()]));
+
     try {
-      for (int t=0; t<threadCount; t++) 
-        threads[t].join();
-    } catch (InterruptedException exn) { }
-    long result = 0;
-    for (int t=0; t<threadCount; t++) 
-      result += results[t];
-    return result;
+      allFutures.get();
+      futures.forEach(x -> {
+        try {
+          result.addAndGet((Long) x.get());
+        } catch (Exception e) {
+        }
+      });
+      //var sresult = futures.stream().map(future -> (Long) future.join()).mapToLong().sum();
+    } catch (Exception e) {
+      e.printStackTrace();
+    } finally {
+      executor.shutdown();
+    }
+    return result.get();
   }
 
   // --- Benchmarking infrastructure ---
