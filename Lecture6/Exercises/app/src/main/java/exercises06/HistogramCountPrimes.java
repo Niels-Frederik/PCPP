@@ -18,20 +18,15 @@ public class HistogramCountPrimes {
     public static int primeFactors(int n)
     {
         int count = 0;
-        while (n%2==0)
-        {
-            n /= 2;
-        }
 
-        for (int i = 3; i <= Math.sqrt(n); i+= 2)
-        {
-            while (n%i == 0)
-            {
-                n /= i;
+        for(int i = 2; i< n; i++) {
+            while(n%i == 0) {
+                count++;
+                n = n/i;
             }
         }
+        if(n>2) count++;
 
-        if (n > 2) count++;
         return count;
     }
 
@@ -45,9 +40,12 @@ public class HistogramCountPrimes {
         for (int t=0; t<amountOfThreads; t++) {
             final int from = perThread * t;
             final int to = (t+1==amountOfThreads) ? range : perThread * (t+1);
+            //System.out.println(from);
+            //System.out.println(to);
             futures.add(CompletableFuture.runAsync(() -> {
                 for (int i = from; i < to; i++) {
                         var s = primeFactors(i);
+                        //System.out.println(s);
                         hist.increment(s);
                 }
             }, executor));
@@ -62,7 +60,10 @@ public class HistogramCountPrimes {
             executor.shutdown();
             System.out.println("Total: " + hist.getTotal());
             System.out.println("Span: " + hist.getSpan());
-            System.out.println("Count: " + hist.getCount(3));
+            for(int i = 0; i < 9; i++)
+            {
+                System.out.println(i + " : " + hist.getCount(i));
+            }
         }
     }
 }
