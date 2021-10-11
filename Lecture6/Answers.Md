@@ -142,3 +142,18 @@ The ultimately fastest one being the one using 4 threads, which is also the amou
 * countParallelNLocal 18          4992145,6 ns  193224,77         64
 * countParallelN 19               6918286,8 ns  381876,58         64
 * countParallelNLocal 19          6137764,6 ns  436019,76         64
+ 
+#Exercise 6.3
+
+##Exercise 1)
+We have added the following modifiers:
+
+The counts array is now final, as the reference will not change after intialization\
+The increment & getPercentage methods are synchronized as they are non-atomic operations\
+The rest of the methods do not need any modification as they only return primitive types and cannot escape through their methods
+
+The getSpan method does not need synchronization as it simply returns a primitive type and it only relies on a final object, so the size will never change
+
+
+##Exercise 2)
+See the HistogramCountPrimes.java file
