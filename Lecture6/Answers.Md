@@ -56,7 +56,11 @@ Transfer 3732 from 8 to 0\
 Transfer 1835 from 1 to 6
 
 **Running without the min/max:**\
-We reach a deadlock
+We reach a deadlock. This can happen with an interleving where two threads A and B
+attempt to make a transaction. Say Thread A wants to make a transaction from account 4 to account 2.
+Therefore thread A locks 4, and in the meantime Thread B wants to transact from 2 to 4. Then thread B locks
+account 2. Thread A now attempts to lock account 2, but cannot, since Thread B has locked this. Not Thread B attempts
+to lock account 4, but thread A has already locked this. Then we have reached a deadlock.
 
 
 ##Exercise 3)
