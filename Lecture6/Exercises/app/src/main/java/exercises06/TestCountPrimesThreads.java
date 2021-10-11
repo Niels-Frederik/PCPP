@@ -18,8 +18,8 @@ public class TestCountPrimesThreads{
     Mark7("countSequential", i -> countSequential(range));
     for (int c=1; c<=32; c++) {
     final int threadCount = c;
-      //Mark7(String.format("countParallelN %2d", threadCount),
-      //      i -> countParallelN(range, threadCount));
+      Mark7(String.format("countParallelN %2d", threadCount),
+            i -> countParallelN(range, threadCount));
 
       Mark7(String.format("countParallelNLocal %2d", threadCount), 
             i -> countParallelNLocal(range, threadCount));
@@ -56,26 +56,29 @@ public class TestCountPrimesThreads{
 
   // General parallel solution, using multiple threads
   private static long countParallelN(int range, int threadCount) {
+    ExecutorService executor = Executors.newFixedThreadPool(threadCount);
     final int perThread = range / threadCount;
     final LongCounter lc = new LongCounter();
-    Thread[] threads = new Thread[threadCount];
+    List<CompletableFuture> futures = new ArrayList<>();
     for (int t=0; t<threadCount; t++) {
-        final int from = perThread * t, 
-            to = (t+1==threadCount) ? range : perThread * (t+1); 
-        threads[t] = new Thread( () -> {
-                for (int i=from; i<to; i++)
-                    if (isPrime(i))
-                        lc.increment();
-            });
+        final int from = perThread * t;
+        final int to = (t+1==threadCount) ? range : perThread * (t+1);
+        futures.add(CompletableFuture.runAsync(() -> {
+          for (int i = from; i < to; i++) {
+            if (isPrime(i))
+              lc.increment();
+          }
+        }, executor));
     }
-    for (int t=0; t<threadCount; t++) 
-      threads[t].start();
+    var allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[futures.size()]));
     try {
-      for (int t=0; t<threadCount; t++) 
-        threads[t].join();
-        //System.out.println("Primes: "+lc.get());
-    } catch (InterruptedException exn) { }
-    return lc.get();
+      allFutures.get();
+    } catch (Exception e) {
+      e.printStackTrace();
+    } finally {
+      executor.shutdown();
+      return lc.get();
+    }
   }
 
   // General parallel solution, using multiple threads
