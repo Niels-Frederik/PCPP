@@ -52,7 +52,6 @@ public class ThreadsAccountExperimentsMany {
   }
   
   private static CompletableFuture doTransaction(Transaction t){
-    System.out.println(t);
     CompletableFuture<?> future = CompletableFuture.runAsync(t, executor);
     return future;
   }

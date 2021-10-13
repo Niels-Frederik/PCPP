@@ -62,7 +62,7 @@ class Histogram1 implements Histogram {
 
 class Histogram2 implements Histogram {
   private final int[] counts;
-  private int total=0;
+  private volatile int total=0;
 
   public Histogram2(int span) {
     this.counts = new int[span];
@@ -73,7 +73,7 @@ class Histogram2 implements Histogram {
     total++;
   }
 
-  public int getCount(int bin) {
+  public synchronized int getCount(int bin) {
     return counts[bin];
   }
 
