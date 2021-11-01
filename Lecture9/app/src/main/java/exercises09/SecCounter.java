@@ -1,11 +1,11 @@
 package exercises09;
 
 public class SecCounter {
-  public int seconds;
+  public int milSeconds;
   private boolean running;
 
-  public SecCounter(int s, boolean r){
-    seconds= s;
+  public SecCounter( int s, boolean r){
+    milSeconds = s;
     running= r;
   }
 	
@@ -14,7 +14,7 @@ public class SecCounter {
   }
 
   public boolean incr(){
-    if (running) seconds++; 
+    if (running) milSeconds += 100;
     return running;
   }
 

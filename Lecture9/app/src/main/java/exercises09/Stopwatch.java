@@ -6,7 +6,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 /* This example is inspired by the StopWatch app in Head First. Android Development
    http://shop.oreilly.com/product/0636920029045.do
-   Modified to Java, October 7, 2021 by Jørgen Staunstrup, ITU, jst@itu.dk */
+   Modified to Java, October 7, 2021 by Jorgen Staunstrup, ITU, jst@itu.dk */
 
 public class Stopwatch {
   public static void main(String[] args) { new Stopwatch(); }
@@ -26,7 +26,7 @@ public class Stopwatch {
       public void run() {
 		    try {
           while ( true ) {
-            TimeUnit.SECONDS.sleep(1);
+            TimeUnit.MILLISECONDS.sleep(100);
             myUI.updateTime();
         }
 		    } catch (java.lang.InterruptedException e) { System.out.println(e.toString());   }

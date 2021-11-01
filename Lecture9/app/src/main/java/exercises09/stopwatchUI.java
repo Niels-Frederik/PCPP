@@ -3,15 +3,14 @@ package exercises09;
 import java.awt.event.*;  
 import javax.swing.*; 
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
-// User interfaca for Stopwatch, October 7, 2021 by Jørgen Staunstrup, ITU, jst@itu.dk
+// User interfaca for Stopwatch, October 7, 2021 by Jorgen Staunstrup, ITU, jst@itu.dk
 
 class stopwatchUI {
-  final private String allzero = "0:00:00";
+  final private String allzero = "0:00:00:00";
   private int lx;
   private static JFrame lf;
   private SecCounter lC;
-  
+
   final private JButton startButton= new JButton("Start");	
   final private JButton stopButton= new JButton("Stop");
   final private JButton resetButton= new JButton("Reset");		
@@ -20,11 +19,12 @@ class stopwatchUI {
   public void updateTime(){
     synchronized(this) {
       if ( lC.incr() ) {
-        int seconds= lC.seconds;
+        int milliseconds = lC.milSeconds % 1000;
+        int seconds= lC.milSeconds/1000;
         int hours= seconds/3600;
         int minutes= (seconds%3600)/60;
         int secs= seconds%60;
-        String time= String.format(Locale.getDefault(),	"%d:%02d:%02d", hours, minutes, secs);
+        String time= String.format(Locale.getDefault(),	"%d:%02d:%02d:%02d", hours, minutes, secs, milliseconds);
         tf.setText(time);
       }
     }
@@ -35,7 +35,7 @@ class stopwatchUI {
   
   public stopwatchUI(int x, JFrame jF){
     lx= x+50; lf= jF;	
-    tf.setBounds(lx, 10, 60, 20); 
+    tf.setBounds(lx, 10, 80, 20);
     tf.setText(allzero);
 
     lC= new SecCounter(0, false);
