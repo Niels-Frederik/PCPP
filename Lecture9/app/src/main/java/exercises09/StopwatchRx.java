@@ -11,7 +11,7 @@ import io.reactivex.disposables.Disposable;
 
 /* This example is inspired by the StopWatch app in Head First. Android Development
 http://shop.oreilly.com/product/0636920029045.do
-Modified to Java, October 2020 by Jørgen Staunstrup, ITU, jst@itu.dk */
+Modified to Java, October 2020 by Jorgen Staunstrup, ITU, jst@itu.dk */
 
 public class StopwatchRx {
 public static void main(String[] args) {  new StopwatchRx(); } 
@@ -22,7 +22,7 @@ public static void main(String[] args) {  new StopwatchRx(); }
 		f.setBounds(0, 0, 220, 220); 
     myUI= new stopwatchUI(0, f);
  
-    //TO DO
+    timer.subscribe(display);
     //Insert code using timer and display to make a working version of the Stopwatch
     
     f.setLayout(null);  
@@ -38,7 +38,7 @@ public static void main(String[] args) {  new StopwatchRx(); }
           public void run() {
             try {
               while ( true ) {
-                TimeUnit.SECONDS.sleep(1);
+                TimeUnit.MILLISECONDS.sleep(100);
                 e.onNext(1);
               }
             } catch (java.lang.InterruptedException e) {
