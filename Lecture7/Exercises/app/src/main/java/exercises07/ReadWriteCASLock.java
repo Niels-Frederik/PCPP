@@ -10,18 +10,28 @@ class ReadWriteCASLock implements SimpleRWTryLockInterface {
 
     public static void main(String[] args) {
         ReadWriteCASLock rw = new ReadWriteCASLock();
-        rw.SequentialTest();
-        //TODO execute tests (7.2.5 & 7.2.6)
+        //rw.SequentialTest();
+        //rw.SequentialTest2();
+        rw.MultithreadingTest();
     }
 
     public boolean readerTryLock() {
-        if (Holders.get() instanceof Writer) return false;
-        var NoneExists = Holders.compareAndSet(null, new ReaderList(Thread.currentThread()));
-        if (NoneExists || ((ReaderList) Holders.get()).Contains(Thread.currentThread())) return true;
-        return Holders.compareAndSet(Holders.get(), new ReaderList(Thread.currentThread(), ((ReaderList) Holders.get())));
+        boolean changed = false;
+        do {
+            if (Holders.get() instanceof Writer) continue;
+            if (Holders.get() == null) changed = Holders.compareAndSet(null, new ReaderList(Thread.currentThread()));
+            else
+            {
+                if (((ReaderList) Holders.get()).Contains(Thread.currentThread())) return true;
+                changed = Holders.compareAndSet(Holders.get(), new ReaderList(Thread.currentThread(), ((ReaderList) Holders.get())));
+            }
+        }
+        while (!changed);
+        return true;
     }
 
     public void readerUnlock() throws Exception {
+        if (Holders.get() instanceof Writer) throw new Exception("Writer has the lock");
         if (!(((ReaderList) Holders.get()).Contains(Thread.currentThread()))) throw new Exception("Reader does not hold lock");
         Holders.compareAndSet(Holders.get(), ((ReaderList) Holders.get()).Remove(Thread.currentThread()));
     }
@@ -62,12 +72,12 @@ class ReadWriteCASLock implements SimpleRWTryLockInterface {
         public boolean Contains(Thread threadToFind) {
             if (threadToFind == thread) return true;
             else if (next == null) return false;
-            else return Contains(next.thread);
+            else return next.Contains(threadToFind);
         }
 
         public ReaderList Remove(Thread threadToRemove) {
             var currentHolder = this;
-            if (currentHolder.next == null || currentHolder.thread == threadToRemove) return null;
+            if ((currentHolder.next == null && threadToRemove == currentHolder.thread)) return null;
             ReaderList newList = null;
             while (currentHolder != null) {
                 if (currentHolder.thread == threadToRemove)
@@ -91,65 +101,126 @@ class ReadWriteCASLock implements SimpleRWTryLockInterface {
 
     public void SequentialTest()
     {
-        //writer locks
         WriterLockLogging();
-
-        //Reader tries to lock
         ReaderLockLogging();
-
-        //Reader tries to unlock
         ReaderUnlockLogging();
-
-        //Writer unlocks
         WriterUnlockLogging();
-
-        //Reader tries to lock
         ReaderLockLogging();
-
-        //Writer tries to lock
         WriterLockLogging();
-
-        //Writer tries to unlock
         WriterUnlockLogging();
-
-        //Reader unlocks
         ReaderUnlockLogging();
-
     }
 
-    public void WriterLockLogging()
+    public void SequentialTest2()
     {
-        if (this.writerTryLock()) System.out.println("Writer acquired lock");
-        else System.out.println("Writer failed to acquire lock");
+        ReaderLockLogging();
+        ReaderUnlockLogging();
+        ReaderLockLogging();
+        ReaderUnlockLogging();
+        WriterLockLogging();
+        WriterUnlockLogging();
+        ReaderLockLogging();
+        WriterUnlockLogging();
+        ReaderUnlockLogging();
+        WriterLockLogging();
+        WriterUnlockLogging();
     }
 
-    public void WriterUnlockLogging()
+    public void MultithreadingTest()
+    {
+        //Start a writer
+        for (int i = 0; i < 4 ; i++) {
+            Runnable runnable = () ->
+            {
+                if (WriterLockLogging()) {
+
+                    //simulate some work
+                    try {
+                        Thread.sleep(3000);
+                        System.out.println("Writer thread " + Thread.currentThread() + "did some work");
+                        WriterUnlockLogging();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+           Thread t = new Thread(runnable);
+           t.start();
+        }
+
+        for(int i = 0; i < 4 ; i++)
+        {
+            Runnable runnable = () ->
+            {
+                if (ReaderLockLogging()) {
+
+                    try {
+                        Thread.sleep(3000);
+                        System.out.println("Reader thread " + Thread.currentThread() + "did some work");
+                        ReaderUnlockLogging();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            Thread t = new Thread(runnable);
+            t.start();
+        }
+    }
+
+    public boolean WriterLockLogging()
+    {
+        if (this.writerTryLock())
+        {
+            System.out.println("Writer thread " + Thread.currentThread() + " acquired lock");
+            return true;
+        }
+        else
+        {
+            System.out.println("Writer thread " + Thread.currentThread() + " failed to acquire lock");
+            return false;
+        }
+    }
+
+    public boolean WriterUnlockLogging()
     {
         try {
             this.writerUnlock();
-            System.out.println("Writer released lock");
+            System.out.println("Writer thread " + Thread.currentThread() + " released lock");
+            return true;
         }
         catch (Exception e)
         {
-            System.out.println("Writer failed to release lock");
+            System.out.println("Writer thread " + Thread.currentThread() + " failed to release lock");
+            return false;
         }
     }
 
-    public void ReaderLockLogging()
+    public boolean ReaderLockLogging()
     {
-        if (this.readerTryLock()) System.out.println("Reader acquired lock");
-        else System.out.println("Reader failed to acquire lock");
+        if (this.readerTryLock())
+        {
+            System.out.println("Reader thread " + Thread.currentThread() + " acquired lock");
+            return true;
+        }
+        else
+        {
+            System.out.println("Reader thread " + Thread.currentThread() + " failed to acquire lock");
+            return false;
+        }
     }
 
-    public void ReaderUnlockLogging()
+    public boolean ReaderUnlockLogging()
     {
         try {
             this.readerUnlock();
-            System.out.println("Reader released lock");
+            System.out.println("Reader thread " + Thread.currentThread() + " released lock");
+            return true;
         }
         catch (Exception e)
         {
-            System.out.println("Reader failed to release lock");
+            System.out.println("Reader thread " + Thread.currentThread() + " failed to release lock");
+            return false;
         }
     }
 }
