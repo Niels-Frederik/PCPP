@@ -15,9 +15,6 @@ class ReadWriteCASLock implements SimpleRWTryLockInterface {
     }
 
     public boolean readerTryLock() {
-        //System.out.println("Reader try lock");
-        System.out.println("Holder is Writer: " + (Holders.get() instanceof Writer));
-        System.out.println("Holder is Reader: " + (Holders.get() instanceof ReaderList));
         if (Holders.get() instanceof Writer) return false;
         var NoneExists = Holders.compareAndSet(null, new ReaderList(Thread.currentThread()));
         if (NoneExists || ((ReaderList) Holders.get()).Contains(Thread.currentThread())) return true;
@@ -25,23 +22,16 @@ class ReadWriteCASLock implements SimpleRWTryLockInterface {
     }
 
     public void readerUnlock() throws Exception {
-        System.out.println("Holder is Writer: " + (Holders.get() instanceof Writer));
-        System.out.println("Holder is Reader: " + (Holders.get() instanceof ReaderList));
-        if (((ReaderList) Holders.get()).Contains(Thread.currentThread())) throw new Exception("Reader does not hold lock");
-        var success = Holders.compareAndSet(Holders.get(), ((ReaderList) Holders.get()).Remove(Thread.currentThread()));
-        System.out.println("reader unlocked: " + success);
+        if (!(((ReaderList) Holders.get()).Contains(Thread.currentThread()))) throw new Exception("Reader does not hold lock");
+        Holders.compareAndSet(Holders.get(), ((ReaderList) Holders.get()).Remove(Thread.currentThread()));
     }
 
     public boolean writerTryLock() {
-        System.out.println("Holder is Writer: " + (Holders.get() instanceof Writer));
-        System.out.println("Holder is Reader: " + (Holders.get() instanceof ReaderList));
         if (Holders.get() instanceof ReaderList) return false;
         return Holders.compareAndSet(null, new Writer(Thread.currentThread()));
     }
 
     public void writerUnlock() throws Exception {
-        System.out.println("Holder is Writer: " + (Holders.get() instanceof Writer));
-        System.out.println("Holder is Reader: " + (Holders.get() instanceof ReaderList));
         if (Holders.get() instanceof ReaderList) throw new Exception("A reader has the lock");
         var currentThreadHoldsLock = Holders.get().thread == Thread.currentThread();
         if (!currentThreadHoldsLock) throw new Exception("Writer does not hold lock");
@@ -147,7 +137,7 @@ class ReadWriteCASLock implements SimpleRWTryLockInterface {
 
     public void ReaderLockLogging()
     {
-        if (this.writerTryLock()) System.out.println("Reader acquired lock");
+        if (this.readerTryLock()) System.out.println("Reader acquired lock");
         else System.out.println("Reader failed to acquire lock");
     }
 
