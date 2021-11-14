@@ -23,8 +23,7 @@ public static void main(String[] args) {  new StopwatchRx(); }
     myUI= new stopwatchUI(0, f);
  
     timer.subscribe(display);
-    //Insert code using timer and display to make a working version of the Stopwatch
-    
+
     f.setLayout(null);  
 		f.setVisible(true);   
 	}

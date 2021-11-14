@@ -10,15 +10,15 @@ class ReadWriteCASLock implements SimpleRWTryLockInterface {
 
     public static void main(String[] args) {
         ReadWriteCASLock rw = new ReadWriteCASLock();
-        //rw.SequentialTest();
+        rw.SequentialTest();
         //rw.SequentialTest2();
-        rw.MultithreadingTest();
+        //rw.MultithreadingTest();
     }
 
     public boolean readerTryLock() {
         boolean changed = false;
         do {
-            if (Holders.get() instanceof Writer) continue;
+            if (Holders.get() instanceof Writer) return false;
             if (Holders.get() == null) changed = Holders.compareAndSet(null, new ReaderList(Thread.currentThread()));
             else
             {
