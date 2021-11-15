@@ -9,7 +9,8 @@ public class Main {
     public static void main(String[] args) {
     
 	// actor system
-	// To be implemented
+		final ActorSystem<SystemGuardian.KickOff> guardian = ActorSystem.create(SystemGuardian.create(), "guardian");
+		guardian.tell(new SystemGuardian.KickOff());
 
 	// init message
 	// To be implemented
@@ -24,7 +25,7 @@ public class Main {
 	    e.printStackTrace();
 	} finally {
 	    // terminate actor system execution
-	    // To be implemented
+		guardian.terminate();
 	}
     
     }

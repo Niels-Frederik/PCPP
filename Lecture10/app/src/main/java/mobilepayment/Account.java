@@ -1,5 +1,6 @@
 package mobilepayment;
 
+import akka.actor.typed.ActorRef;
 import akka.actor.typed.Behavior;
 import akka.actor.typed.javadsl.*;
 import akka.japi.pf.ReceiveBuilder;
@@ -43,6 +44,10 @@ public class Account extends AbstractBehavior<Account.TransactionMessage> {
     public Behavior<TransactionMessage> onMessage(TransactionMessage msg)
     {
         balance+=msg.amount;
+
+        getContext().getLog().info("{} transacted {} : new balance {}",
+                getContext().getSelf().path().name(),
+                msg.amount, balance);
         return this;
     }
 }

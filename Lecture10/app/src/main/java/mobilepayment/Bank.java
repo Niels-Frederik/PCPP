@@ -11,26 +11,26 @@ public class Bank extends AbstractBehavior<Bank.MobileMessage> {
 
     /* --- Messages ------------------------------------- */
     public static final class MobileMessage{
+        public ActorRef<Account.TransactionMessage> Sender;
+        public ActorRef<Account.TransactionMessage> Receiver;
         public int amount;
-        public ActorRef<Account> sender;
-        public ActorRef<Account> receiver;
 
-        public MobileMessage(int amount, ActorRef<Account> sender, ActorRef<Account> receiver)
+        public MobileMessage(int amount, ActorRef<Account.TransactionMessage> sender, ActorRef<Account.TransactionMessage> receiver)
         {
             this.amount = amount;
-            this.sender = sender;
-            this.receiver = receiver;
+            this.Sender = sender;
+            this.Receiver = receiver;
         }
     }
 
     /* --- State ---------------------------------------- */
-    private List<MobileMessage> inbox;
+    //private List<MobileMessage> inbox;
 
     /* --- Constructor ---------------------------------- */
     private Bank(ActorContext<MobileMessage> context)
     {
         super(context);
-        this.inbox = new ArrayList<>();
+        //this.inbox = new ArrayList<>();
     }
 
     /* --- Actor initial behavior ----------------------- */
@@ -49,8 +49,8 @@ public class Bank extends AbstractBehavior<Bank.MobileMessage> {
     /* --- Handlers ------------------------------------- */
     public Behavior<MobileMessage> onMessage(MobileMessage msg)
     {
-        msg.sender.tell(new Account.TransactionMessage(msg.amount));
-        msg.receiver.tell(new Account.TransactionMessage(msg.amount));
+        msg.Sender.tell(new Account.TransactionMessage(-msg.amount));
+        msg.Receiver.tell(new Account.TransactionMessage(msg.amount));
         return this;
     }
 }
