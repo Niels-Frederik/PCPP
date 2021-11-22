@@ -31,6 +31,26 @@ class ConcurrentIntegerSetBuggy implements ConcurrentIntegerSet {
     }
 }
 
+class ConcurrentIntegerSetFixed implements ConcurrentIntegerSet {
+    final private Set<Integer> set;
+
+    public ConcurrentIntegerSetFixed() {
+        this.set = new HashSet<Integer>();
+    }
+
+    public synchronized boolean add(Integer element) {
+        return set.add(element);
+    }
+
+    public synchronized boolean remove(Integer element) {
+        return set.remove(element);
+    }
+
+    public int size() {
+        return set.size();
+    }
+}
+
 // TODO: Fix this class to pass your tests
 class ConcurrentIntegerSetSync implements ConcurrentIntegerSet {
     final private Set<Integer> set;
