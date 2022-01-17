@@ -92,12 +92,12 @@ class ReadWriteCASLock implements SimpleRWTryLockInterface {
         }
     }
 
-        private static class Writer extends Holders {
+    private static class Writer extends Holders {
 
-            public Writer(Thread t) {
-                super(t);
-            }
+        public Writer(Thread t) {
+            super(t);
         }
+    }
 
     public void SequentialTest()
     {
