@@ -23,7 +23,7 @@ class ReadWriteCASLock implements SimpleRWTryLockInterface {
             if (old == null) changed = Holders.compareAndSet(null, new ReaderList(Thread.currentThread()));
             else
             {
-                if (((ReaderList) old.Contains(Thread.currentThread())) return true;
+                if (((ReaderList) old).Contains(Thread.currentThread())) return true;
                 changed = Holders.compareAndSet(old, new ReaderList(Thread.currentThread(), ((ReaderList) old)));
             }
         }
