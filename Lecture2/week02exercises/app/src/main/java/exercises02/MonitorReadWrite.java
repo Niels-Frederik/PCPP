@@ -19,17 +19,14 @@ public class MonitorReadWrite {
             }
             readerCount++;
         }
-        catch(Exception e){
+        catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
     public synchronized void readUnlock() {
-        try {
-            readerCount--;
-            if(readerCount == 0) this.notifyAll();
-        }
-        catch (Exception e){
-        }
+        readerCount--;
+        if(readerCount == 0) this.notifyAll();
     }
 
     public synchronized void writeLock() {
@@ -42,7 +39,8 @@ public class MonitorReadWrite {
                 this.wait();
             }
         }
-        catch (Exception e){
+        catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -51,6 +49,8 @@ public class MonitorReadWrite {
             anyWriter = false;
             this.notifyAll();
         }
-        catch (Exception e){}
+        catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
