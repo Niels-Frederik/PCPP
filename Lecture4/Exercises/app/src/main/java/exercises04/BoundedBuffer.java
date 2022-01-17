@@ -42,6 +42,7 @@ public class BoundedBuffer implements BoundedBufferInteface{
         catch (Exception e)
         {
             consumerLock.release();
+            consumers.release();
             return null;
         }
 
@@ -69,6 +70,7 @@ public class BoundedBuffer implements BoundedBufferInteface{
         catch (Exception e)
         {
             producerLock.release();
+            producers.release();
             return;
         }
 
