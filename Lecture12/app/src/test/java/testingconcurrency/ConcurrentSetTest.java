@@ -70,7 +70,7 @@ public class ConcurrentSetTest {
         try { barrier.await(); barrier.await();} catch (Exception e) {}
         //try { barrier.await(); } catch (Exception e) {}
 
-        assertTrue(set.size()>=0);
+        assertTrue(set.size()==0);
     }
 
     // TODO: Define your tests below
